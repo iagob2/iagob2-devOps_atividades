@@ -1,0 +1,30 @@
+# Esta linha define a versão da configuração do Vagrant, que é a versão "2" neste caso (a versão mais usada atualmente). O do |config| inicia um bloco onde todas as configurações da máquina virtual serão definidas.
+Vagrant.configure("2") do |config|
+
+  # Define a box que será usada para criar a máquina virtual. Uma "box" no Vagrant é uma imagem pré-configurada de um sistema operacional, que pode ser usada como base para a VM. Aqui, a box é o Ubuntu 14.04 (Trusty Tahr), que está disponível no repositório público de boxes do Vagrant.
+  config.vm.box = "ubuntu/trusty64"
+
+  # Define a versão específica da box a ser utilizada. Isso garante que uma versão específica da box "ubuntu/trusty64" seja baixada e usada, neste caso a versão 20191107.0.0.
+  config.vm.box_version = "20191107.0.0"
+
+#   Configura uma rede privada entre o host (sua máquina física) e o guest (a VM). Especificamente:
+# guest: 80: A VM está ouvindo na porta 80 (a porta padrão para o servidor web HTTP).
+# host: 8080: Essa porta na máquina host (sua máquina física) será mapeada para a porta 80 da VM. Isso significa que ao acessar http://localhost:8080 no seu navegador, você estará acessando o servidor web que está rodando na VM na porta 80.
+config.vm.network "private_network", ip: "192.168.33.10"
+
+
+
+  # Esta parte utiliza um provisioner do tipo shell para automatizar a configuração da VM quando ela for criada ou reiniciada.
+  #   apt-get update: Atualiza a lista de pacotes disponíveis do sistema operacional Ubuntu dentro da VM.  
+  config.vm.synced_folder ".", "/vagrant"
+
+ 
+
+  # Esta parte utiliza um provisioner do tipo shell para automatizar a configuração da VM quando ela for criada ou reiniciada.
+  #   apt-get update: Atualiza a lista de pacotes disponíveis do sistema operacional Ubuntu dentro da VM.
+  #   apt-get install -y apache2: Instala o servidor web Apache2 na VM. O -y é usado para automaticamente confirmar a instalação sem solicitar uma interação manual.
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y apache2
+  SHELL
+end
